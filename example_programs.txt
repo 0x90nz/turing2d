@@ -1,13 +1,16 @@
 ; Program #1: Two's Complement
-%tape="0111"%
+%tape="101001000"%
 0 * * * end
 
 end _ * l add
 end 1 0 r *
 end 0 1 r *
 
-add 0 1 * halt
+add 0 1 * back
 add 1 0 l add
+
+back _ * r halt
+back * * l *
 
 ; Program #2: Copy down
 %tape="0111 0000"%
@@ -35,6 +38,26 @@ f0 0 * d w0
 f0 1 * d w1
 f1 0 * d w1
 f1 1 * d w1
+
+w0 * 0 r up
+w1 * 1 r up
+
+up _ * d 0
+up * * u *
+
+; Program #4: Bitwise XOR
+; This is very similar to #3
+
+%tape="1111 0100 0000"%
+
+0 0 * d f0
+0 1 * d f1
+0 _ * * halt
+
+f0 0 * d w0
+f0 1 * d w1
+f1 0 * d w1
+f1 1 * d w0
 
 w0 * 0 r up
 w1 * 1 r up
