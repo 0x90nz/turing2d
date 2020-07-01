@@ -1,0 +1,27 @@
+:root {
+    --bg-color: #fefefe;
+    --fg-color: #3e3e3e;
+}
+
+* {
+    color: var(--fg-color);
+    background-color: var(--bg-color);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h1, h2 {
+    font-family: sans-serif;
+}
+
+header {
+    text-align: center;
+    border-bottom: 1px solid var(--fg-color);
+}
+
+#program {
+    font-family: monospace;
+}
+
+#tape, #tape span {
+    font-family: monospace;
+}
