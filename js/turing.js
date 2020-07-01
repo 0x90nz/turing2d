@@ -1,14 +1,14 @@
 /**
-; run over entire first line
-0 * * * run
-run 0 1 r *
-run * * l back
+; Two's Complement
+%tape="0111"%
+0 * * * end
 
-; reverse back
-back 1 * l *
-back * * r down
+end _ * l add
+end 1 0 r *
+end 0 1 r *
 
-down * * d run
+add 0 1 * halt
+add 1 0 l add
  */
 var MOVES = {
     'r': [1, 0],
@@ -17,6 +17,11 @@ var MOVES = {
     'd': [0, 1],
     '*': [0, 0]
 };
+/**
+ * Parse a string into a rule
+ * @param rule The string representation of the rule
+ * @param lineNumber The line number for accounting
+ */
 function parseRule(rule, lineNumber) {
     var components = rule.split(' ');
     return {
@@ -28,10 +33,19 @@ function parseRule(rule, lineNumber) {
         lineNumber: lineNumber
     };
 }
+/**
+ * Get the current symbol pointed to by the head. Return '_' if the head is out of bounds
+ * @param state The state to retrieve the symbol from
+ */
 function getCurrentSymbol(state) {
     return state.tape.length > state.pointer.y && state.tape[state.pointer.y].length > state.pointer.x
         ? state.tape[state.pointer.y][state.pointer.x] : '_';
 }
+/**
+ * Match two inputs with the wildcard rule applied to the first
+ * @param a Input rule string
+ * @param b Actual object to match
+ */
 function wildcardMatch(a, b) {
     return a === b || a === '*';
 }
@@ -83,12 +97,15 @@ function compile(program, initTape) {
         program: program.replace(/;.*$/m, '').split('\n').filter(function (e) { return e != ''; }).map(parseRule)
     };
 }
+/**
+ * Execute the program until it halts
+ */
 function run() {
     var text = document.querySelector('#program');
     var tapeRegex = /%tape="([^"]+)"%/;
     var initTape = text.value.match(tapeRegex);
     var program = text.value.replace(tapeRegex, '');
-    var tape = tapeRegex != null ? initTape[1] : '00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000';
+    var tape = initTape != null ? initTape[1] : '00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000';
     var state = compile(program, tape);
     console.log(state.program);
     var t = setInterval(function () {
@@ -96,5 +113,5 @@ function run() {
             clearInterval(t);
             console.log('Execution halted');
         }
-    }, 250);
+    }, 100);
 }

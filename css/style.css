@@ -1,6 +1,9 @@
 :root {
     --bg-color: #fefefe;
     --fg-color: #3e3e3e;
+    --ol-color: #a5b1c2;
+    --ac-color1: #3867d6;
+    --ac-color2: #fa8231;
 }
 
 * {
@@ -15,13 +18,37 @@ h1, h2 {
 
 header {
     text-align: center;
-    border-bottom: 1px solid var(--fg-color);
+}
+
+.content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }
 
 #program, code {
     font-family: monospace;
 }
 
+#program {
+    border: 1px solid var(--ol-color);
+    border-radius: 3px;
+    resize: none;
+    padding: 5px;
+}
+
+#tape {
+    font-size: 2.5em;
+}
+
 #tape, #tape span {
     font-family: monospace;
+}
+
+button {
+    border: 1px solid var(--ol-color);
+    border-radius: 3px;
+    padding: 7px;
+    color: var(--bg-color);
+    font-weight: 600;
+    background-color: var(--ac-color1);
 }

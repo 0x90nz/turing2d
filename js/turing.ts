@@ -1,4 +1,6 @@
 /**
+Some example programs:
+
 ; Two's Complement
 %tape="0111"%
 0 * * * end
@@ -9,6 +11,21 @@ end 0 1 r *
 
 add 0 1 * halt
 add 1 0 l add
+
+; Copy down
+%tape="0111 0000"%
+
+; Copy a digit or halt
+0 0 * d c0
+0 1 * d c1
+0 _ * * halt
+
+; Copy a digit and then go to up
+c0 * 0 r up
+c1 * 1 r up
+
+; Go back up
+up * * u 0
  */
 
 const MOVES = {
@@ -149,7 +166,7 @@ function run() {
     const tapeRegex = /%tape="([^"]+)"%/;
     const initTape = text.value.match(tapeRegex);
     const program = text.value.replace(tapeRegex, '');
-    const tape = tapeRegex != null ? initTape[1] : '00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000';
+    const tape = initTape != null ? initTape[1] : '00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000';
     let state = compile(program, tape);
 
     console.log(state.program);

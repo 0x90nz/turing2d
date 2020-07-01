@@ -12,10 +12,18 @@
         <h1>2D Turing Machine</h1>
     </header>
     <div class="content">
-        <p>Rules are in the format <code>[current state] [current symbol] [new symbol] [direction: r, l, u, d] [new state]</code></p>
-        <p>Specify an initial tape value with <code>%tape="00 00"%</code> for example to create a 2x2 tape</p>
-        <textarea id="program" cols="80" rows="25"></textarea>
-        <div id="tape"></div>
+        <div class="programArea">
+            <h2>Program</h2>
+            <p>Rules are in the format <code>[current state] [current symbol] [new symbol] [direction: r, l, u, d] [new state]</code></p>
+            <p>Specify an initial tape value with <code>%tape="00 00"%</code> for example to create a 2x2 tape</p>
+            <textarea id="program" cols="80" rows="25"></textarea>
+            <br>
+            <button onclick="run()">Run</button>
+        </div>
+        <div class="tapeArea">
+            <h2>Machine State</h2>
+            <div id="tape"></div>
+        </div>
     </div>
 </body>
 </html>
