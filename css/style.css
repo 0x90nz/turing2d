@@ -21,6 +21,8 @@ header {
 }
 
 .content {
+    padding-left: 2vw;
+    padding-right: 2vw;
     display: grid;
     grid-template-columns: 1fr 1fr;
 }
