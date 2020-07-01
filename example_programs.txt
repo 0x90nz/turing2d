@@ -1,0 +1,43 @@
+; Program #1: Two's Complement
+%tape="0111"%
+0 * * * end
+
+end _ * l add
+end 1 0 r *
+end 0 1 r *
+
+add 0 1 * halt
+add 1 0 l add
+
+; Program #2: Copy down
+%tape="0111 0000"%
+
+; Copy a digit or halt
+0 0 * d c0
+0 1 * d c1
+0 _ * * halt
+
+; Copy a digit and then go to up
+c0 * 0 r up
+c1 * 1 r up
+
+; Go back up
+up * * u 0
+
+; Program #3: Bitwise OR
+%tape="1010 0100 0000"%
+
+0 0 * d f0
+0 1 * d f1
+0 _ * * halt
+
+f0 0 * d w0
+f0 1 * d w1
+f1 0 * d w1
+f1 1 * d w1
+
+w0 * 0 r up
+w1 * 1 r up
+
+up _ * d 0
+up * * u *

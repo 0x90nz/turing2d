@@ -1,32 +1,3 @@
-/**
-Some example programs:
-
-; Two's Complement
-%tape="0111"%
-0 * * * end
-
-end _ * l add
-end 1 0 r *
-end 0 1 r *
-
-add 0 1 * halt
-add 1 0 l add
-
-; Copy down
-%tape="0111 0000"%
-
-; Copy a digit or halt
-0 0 * d c0
-0 1 * d c1
-0 _ * * halt
-
-; Copy a digit and then go to up
-c0 * 0 r up
-c1 * 1 r up
-
-; Go back up
-up * * u 0
- */
 var MOVES = {
     'r': [1, 0],
     'l': [-1, 0],
@@ -55,7 +26,10 @@ function parseRule(rule, lineNumber) {
  * @param state The state to retrieve the symbol from
  */
 function getCurrentSymbol(state) {
-    return state.tape.length > state.pointer.y && state.tape[state.pointer.y].length > state.pointer.x
+    return state.pointer.y >= 0
+        && state.pointer.x >= 0
+        && state.tape.length > state.pointer.y
+        && state.tape[state.pointer.y].length > state.pointer.x
         ? state.tape[state.pointer.y][state.pointer.x] : '_';
 }
 /**
