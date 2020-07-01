@@ -1,14 +1,14 @@
 /**
-; run over entire first line
-0 * * * run
-run 0 1 r *
-run * * l back
+; Two's Complement
+%tape="0111"%
+0 * * * end
 
-; reverse back
-back 1 * l *
-back * * r down
+end _ * l add
+end 1 0 r *
+end 0 1 r *
 
-down * * d run
+add 0 1 * halt
+add 1 0 l add
  */
 
 const MOVES = {
@@ -19,11 +19,17 @@ const MOVES = {
     '*': [0, 0]
 };
 
+/**
+ * Represents an x y coordinate pair on the tape
+ */
 interface IPos {
     x: number;
     y: number;
 }
 
+/**
+ * Represents the state of the machine, _including_ the program being run
+ */
 interface IMachineState {
     pointer: IPos;
     tape: string[][];
@@ -32,7 +38,7 @@ interface IMachineState {
 }
 
 /**
- * Represents a rule
+ * Represents a rule for the turing machine
  */
 interface IRule {
     currentState: string;
@@ -43,6 +49,11 @@ interface IRule {
     lineNumber: number;
 }
 
+/**
+ * Parse a string into a rule
+ * @param rule The string representation of the rule
+ * @param lineNumber The line number for accounting
+ */
 function parseRule(rule: string, lineNumber: number): IRule {
     const components = rule.split(' ');
 
@@ -56,12 +67,20 @@ function parseRule(rule: string, lineNumber: number): IRule {
     };
 }
 
-function getCurrentSymbol(state: IMachineState): string {
-    
+/**
+ * Get the current symbol pointed to by the head. Return '_' if the head is out of bounds
+ * @param state The state to retrieve the symbol from
+ */
+function getCurrentSymbol(state: IMachineState): string {    
     return state.tape.length > state.pointer.y && state.tape[state.pointer.y].length > state.pointer.x
         ? state.tape[state.pointer.y][state.pointer.x] : '_';
 }
 
+/**
+ * Match two inputs with the wildcard rule applied to the first
+ * @param a Input rule string
+ * @param b Actual object to match
+ */
 function wildcardMatch(a: string, b: string): boolean {
     return a === b || a === '*';
 }
@@ -79,13 +98,12 @@ function execute(state: IMachineState): boolean {
 
     if (matchedRules.length < 1) {
         console.log(state);
-        throw 'No rules were found for the current state';
+        console.error('Could not find a rule which satisfied the machines state');
+        return false;
     }
 
     // We just always go with the first matching rule
     const rule = matchedRules[0];
-
-    console.log(rule);
 
     // Only update the symbol if requested
     if (rule.newSymbol !== '*')
@@ -103,7 +121,7 @@ function execute(state: IMachineState): boolean {
     // Format the output
     document.getElementById('tape').innerHTML = state.tape.map((e, y) =>
         e.map((e, x) =>
-            x == state.pointer.x && y === state.pointer.y ? `<span style="color:red">${e}</span>` : e
+            x == state.pointer.x && y === state.pointer.y ? `<span style="background-color:red;color: white;">${e}</span>` : e
         ).join('')
     ).join('<br>');
 
@@ -114,21 +132,32 @@ function execute(state: IMachineState): boolean {
  * Compile a string into a machine state, comprised of a set of rules
  * @param program the given program to compile
  */
-function compile(program: string): IMachineState {
+function compile(program: string, initTape: string): IMachineState {
     return {
         pointer: { x: 0, y: 0 },
         state: '0',
-        tape: '00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000'.split(' ').map(e => e.split('')),
+        tape: initTape.split(' ').map(e => e.split('')),
         program: program.replace(/;.*$/m, '').split('\n').filter(e => e != '').map(parseRule)
     };
 }
 
+/**
+ * Execute the program until it halts
+ */
 function run() {
     const text = document.querySelector('#program') as HTMLTextAreaElement;
-    let state = compile(text.value);
+    const tapeRegex = /%tape="([^"]+)"%/;
+    const initTape = text.value.match(tapeRegex);
+    const program = text.value.replace(tapeRegex, '');
+    const tape = tapeRegex != null ? initTape[1] : '00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000';
+    let state = compile(program, tape);
 
     console.log(state.program);
 
-    while (execute(state))
-        alert('a');
+    const t = setInterval(() => {
+        if (!execute(state)) {
+            clearInterval(t);
+            console.log('Execution halted');
+        }
+    }, 100);
 }

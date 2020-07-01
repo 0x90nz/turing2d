@@ -1,3 +1,15 @@
+/**
+; run over entire first line
+0 * * * run
+run 0 1 r *
+run * * l back
+
+; reverse back
+back 1 * l *
+back * * r down
+
+down * * d run
+ */
 var MOVES = {
     'r': [1, 0],
     'l': [-1, 0],
@@ -36,11 +48,11 @@ function execute(state) {
     });
     if (matchedRules.length < 1) {
         console.log(state);
-        throw 'No rules were found for the current state';
+        console.error('Could not find a rule which satisfied the machines state');
+        return false;
     }
     // We just always go with the first matching rule
     var rule = matchedRules[0];
-    console.log(rule);
     // Only update the symbol if requested
     if (rule.newSymbol !== '*')
         state.tape[state.pointer.y][state.pointer.x] = rule.newSymbol;
@@ -54,7 +66,7 @@ function execute(state) {
     // Format the output
     document.getElementById('tape').innerHTML = state.tape.map(function (e, y) {
         return e.map(function (e, x) {
-            return x == state.pointer.x && y === state.pointer.y ? "<span style=\"color:red\">" + e + "</span>" : e;
+            return x == state.pointer.x && y === state.pointer.y ? "<span style=\"background-color:red;color: white;\">" + e + "</span>" : e;
         }).join('');
     }).join('<br>');
     return state.state !== 'halt';
@@ -63,18 +75,26 @@ function execute(state) {
  * Compile a string into a machine state, comprised of a set of rules
  * @param program the given program to compile
  */
-function compile(program) {
+function compile(program, initTape) {
     return {
         pointer: { x: 0, y: 0 },
         state: '0',
-        tape: '00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000'.split(' ').map(function (e) { return e.split(''); }),
+        tape: initTape.split(' ').map(function (e) { return e.split(''); }),
         program: program.replace(/;.*$/m, '').split('\n').filter(function (e) { return e != ''; }).map(parseRule)
     };
 }
 function run() {
     var text = document.querySelector('#program');
-    var state = compile(text.value);
+    var tapeRegex = /%tape="([^"]+)"%/;
+    var initTape = text.value.match(tapeRegex);
+    var program = text.value.replace(tapeRegex, '');
+    var tape = tapeRegex != null ? initTape[1] : '00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000';
+    var state = compile(program, tape);
     console.log(state.program);
-    while (execute(state))
-        alert('a');
+    var t = setInterval(function () {
+        if (!execute(state)) {
+            clearInterval(t);
+            console.log('Execution halted');
+        }
+    }, 250);
 }

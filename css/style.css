@@ -18,7 +18,7 @@ header {
     border-bottom: 1px solid var(--fg-color);
 }
 
-#program {
+#program, code {
     font-family: monospace;
 }
 
