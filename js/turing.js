@@ -99,10 +99,17 @@ function run() {
     var tape = initTape != null ? initTape[1] : '00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000';
     var state = compile(program, tape);
     console.log(state.program);
+    var statusText = document.querySelector('#status');
+    var stateText = document.querySelector('#state');
+    statusText.innerHTML = 'Running';
     var t = setInterval(function () {
         if (!execute(state)) {
             clearInterval(t);
-            console.log('Execution halted');
+            statusText.innerHTML = 'Halted';
+            stateText.innerHTML = '';
+        }
+        else {
+            stateText.innerHTML = "State: " + state.state;
         }
     }, 100);
 }

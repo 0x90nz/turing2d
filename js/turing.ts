@@ -145,10 +145,17 @@ function run() {
 
     console.log(state.program);
 
+    const statusText = document.querySelector('#status');
+    const stateText = document.querySelector('#state');
+    statusText.innerHTML = 'Running';
+
     const t = setInterval(() => {
         if (!execute(state)) {
             clearInterval(t);
-            console.log('Execution halted');
+            statusText.innerHTML = 'Halted';
+            stateText.innerHTML = '';
+        } else {
+            stateText.innerHTML = `State: ${state.state}`;
         }
     }, 100);
 }
