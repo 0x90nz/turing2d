@@ -1,4 +1,6 @@
 /**
+Some example programs:
+
 ; Two's Complement
 %tape="0111"%
 0 * * * end
@@ -9,6 +11,21 @@ end 0 1 r *
 
 add 0 1 * halt
 add 1 0 l add
+
+; Copy down
+%tape="0111 0000"%
+
+; Copy a digit or halt
+0 0 * d c0
+0 1 * d c1
+0 _ * * halt
+
+; Copy a digit and then go to up
+c0 * 0 r up
+c1 * 1 r up
+
+; Go back up
+up * * u 0
  */
 var MOVES = {
     'r': [1, 0],
@@ -94,7 +111,7 @@ function compile(program, initTape) {
         pointer: { x: 0, y: 0 },
         state: '0',
         tape: initTape.split(' ').map(function (e) { return e.split(''); }),
-        program: program.replace(/;.*$/m, '').split('\n').filter(function (e) { return e != ''; }).map(parseRule)
+        program: program.replace(/;.*$/mg, '').split('\n').filter(function (e) { return e != ''; }).map(parseRule)
     };
 }
 /**

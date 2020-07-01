@@ -154,7 +154,7 @@ function compile(program: string, initTape: string): IMachineState {
         pointer: { x: 0, y: 0 },
         state: '0',
         tape: initTape.split(' ').map(e => e.split('')),
-        program: program.replace(/;.*$/m, '').split('\n').filter(e => e != '').map(parseRule)
+        program: program.replace(/;.*$/mg, '').split('\n').filter(e => e != '').map(parseRule)
     };
 }
 
