@@ -87,7 +87,6 @@ function execute(state: IMachineState): boolean {
         wildcardMatch(r.currentSymbol, getCurrentSymbol(state)));
 
     if (matchedRules.length < 1) {
-        console.log(state);
         console.error('Could not find a rule which satisfied the machines state');
         return false;
     }
@@ -136,22 +135,22 @@ function compile(program: string, initTape: string): IMachineState {
  */
 function run() {
     const text = document.querySelector('#program') as HTMLTextAreaElement;
+
+    // Figure out what tape we're using. If none is supplied, use a default 8x8 tape
     const tapeRegex = /%tape="([^"]+)"%/;
     const initTape = text.value.match(tapeRegex);
     const program = text.value.replace(tapeRegex, '');
     const tape = initTape != null ? initTape[1] : '00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000';
 
+    // Compile and start the program running
     let state = compile(program, tape);
-
-    console.log(state.program);
-
     const statusText = document.querySelector('#status');
     const stateText = document.querySelector('#state');
     statusText.innerHTML = 'Running';
 
-    const t = setInterval(() => {
+    const execTimer = setInterval(() => {
         if (!execute(state)) {
-            clearInterval(t);
+            clearInterval(execTimer);
             statusText.innerHTML = 'Halted';
             stateText.innerHTML = '';
         } else {

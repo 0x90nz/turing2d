@@ -52,7 +52,6 @@ function execute(state) {
             wildcardMatch(r.currentSymbol, getCurrentSymbol(state));
     });
     if (matchedRules.length < 1) {
-        console.log(state);
         console.error('Could not find a rule which satisfied the machines state');
         return false;
     }
@@ -93,18 +92,19 @@ function compile(program, initTape) {
  */
 function run() {
     var text = document.querySelector('#program');
+    // Figure out what tape we're using. If none is supplied, use a default 8x8 tape
     var tapeRegex = /%tape="([^"]+)"%/;
     var initTape = text.value.match(tapeRegex);
     var program = text.value.replace(tapeRegex, '');
     var tape = initTape != null ? initTape[1] : '00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000';
+    // Compile and start the program running
     var state = compile(program, tape);
-    console.log(state.program);
     var statusText = document.querySelector('#status');
     var stateText = document.querySelector('#state');
     statusText.innerHTML = 'Running';
-    var t = setInterval(function () {
+    var execTimer = setInterval(function () {
         if (!execute(state)) {
-            clearInterval(t);
+            clearInterval(execTimer);
             statusText.innerHTML = 'Halted';
             stateText.innerHTML = '';
         }
