@@ -6,7 +6,7 @@
     --ac-color2: #fa8231;
 }
 
-* {
+body {
     color: var(--fg-color);
     background-color: var(--bg-color);
     font-family: Arial, Helvetica, sans-serif;
